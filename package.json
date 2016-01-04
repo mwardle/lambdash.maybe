@@ -1,0 +1,17 @@
+{
+  "name": "lambdash.maybe",
+  "version": "0.5.0",
+  "description": "Maybe data type for lambdash",
+  "main": "src/Maybe.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/"
+  },
+  "author": "Mark Wardle <mwwardle@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lambdash": "^0.5.3"
+  }
+}
