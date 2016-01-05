@@ -183,4 +183,51 @@ describe('Maybe', function(){
             assert.equal(res2, "Maybe.Just(1)");
         });
     });
+
+    describe('@implements', function() {
+        it('should be a member of Eq', function(){
+            assert(_.Eq.member(Maybe()));
+            assert(_.Eq.member(Maybe(1)));
+        });
+
+        it('should be a member of Ord', function(){
+            assert(_.Ord.member(Maybe()));
+            assert(_.Ord.member(Maybe(1)));
+        });
+
+        it('should be a member of Functor', function(){
+            assert(_.Functor.member(Maybe()));
+            assert(_.Functor.member(Maybe(1)));
+        });
+
+        it('should be a member of Semigroup', function(){
+            assert(_.Semigroup.member(Maybe()));
+            assert(_.Semigroup.member(Maybe(1)));
+        });
+
+        it('should be a member of Monoid', function(){
+            assert(_.Monoid.member(Maybe()));
+            assert(_.Monoid.member(Maybe(1)));
+        });
+
+        it('should be a member of Foldable', function(){
+            assert(_.Foldable.member(Maybe()));
+            assert(_.Foldable.member(Maybe(1)));
+        });
+
+        it('should be a member of Applicative', function(){
+            assert(_.Applicative.member(Maybe()));
+            assert(_.Applicative.member(Maybe(1)));
+        });
+
+        it('should be a member of Monad', function(){
+            assert(_.Monad.member(Maybe()));
+            assert(_.Monad.member(Maybe(1)));
+        });
+
+        it('should be a member of Show', function(){
+            assert(_.Show.member(Maybe()));
+            assert(_.Show.member(Maybe(1)));
+        });
+    });
 });
