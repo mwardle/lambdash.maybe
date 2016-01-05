@@ -45,8 +45,17 @@ Maybe.map = _.curry(function(fn, maybe) {
 });
 
 Maybe.concat = _.curry(function(left, right) {
-    if (Maybe.isNothing(left) || Maybe.isNothing(right)) {
+
+    if (Maybe.isNothing(left) && Maybe.isNothing(right)) {
         return Maybe.Nothing;
+    }
+
+    if (Maybe.isNothing(left)) {
+        return right;
+    }
+
+    if (Maybe.isNothing(right)) {
+        return left;
     }
 
     return Maybe(_.concat(left.value, right.value));
@@ -82,3 +91,5 @@ Maybe.show = Maybe.case({
         return "Maybe.Just(" + _.show(value) + ")";
     }
 });
+
+module.exports = Maybe;
