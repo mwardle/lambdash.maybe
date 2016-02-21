@@ -24,9 +24,9 @@ npm install --save lambdash.maybe
 8. Monad
 9. Show
 
-## Typed List
+## Typed Maybe
 
-By default the List implementation accepts any value.
+By default the Maybe implementation accepts any value.
 You can create typed list like so:
 
 ```javascript
