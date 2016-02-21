@@ -1,94 +1,101 @@
 var _ = require('lambdash');
 
-var Maybe = function Maybe(value) {
-    if (value == null) {
-        return Maybe.Nothing;
-    }
-    return Maybe.Just(value);
-};
+var TypedMaybe = function(T) {
+    var Maybe = function Maybe(value) {
+        if (value == null) {
+            return Maybe.Nothing;
+        }
+        return Maybe.Just(value);
+    };
 
-Maybe = _.Type.sum(Maybe, {Just: {value: null}, Nothing: []});
+    Maybe = _.Type.sum(Maybe, {Just: {value: T}, Nothing: []});
 
-Maybe.isJust = Maybe.case({
-    Just: true,
-    Nothing: false
-});
+    Maybe.isJust = Maybe.case({
+        Just: true,
+        Nothing: false
+    });
 
-Maybe.isNothing = Maybe.case({
-    Just: false,
-    Nothing: true
-});
+    Maybe.isNothing = Maybe.case({
+        Just: false,
+        Nothing: true
+    });
 
-Maybe.compare = _.curry(function(left, right) {
-    if (Maybe.isNothing(left)) {
+    Maybe.compare = _.curry(function(left, right) {
+        if (Maybe.isNothing(left)) {
+            if (Maybe.isNothing(right)) {
+                return _.EQ;
+            }
+
+            return _.LT;
+        }
+
         if (Maybe.isNothing(right)) {
-            return _.EQ;
+            return _.GT;
         }
 
-        return _.LT;
-    }
+        return _.compare(left.value, right.value);
+    });
 
-    if (Maybe.isNothing(right)) {
-        return _.GT;
-    }
+    Maybe.map = _.curry(function(fn, maybe) {
+        return Maybe.case({
+            Nothing: Maybe.Nothing,
+            Just: function(value) {
+                return Maybe(fn(value));
+            }
+        }, maybe);
+    });
 
-    return _.compare(left.value, right.value);
-});
+    Maybe.concat = _.curry(function(left, right) {
 
-Maybe.map = _.curry(function(fn, maybe) {
-    return Maybe.case({
-        Nothing: Maybe.Nothing,
-        Just: function(value) {
-            return Maybe(fn(value));
+        if (Maybe.isNothing(left) && Maybe.isNothing(right)) {
+            return Maybe.Nothing;
         }
-    }, maybe);
-});
 
-Maybe.concat = _.curry(function(left, right) {
+        if (Maybe.isNothing(left)) {
+            return right;
+        }
 
-    if (Maybe.isNothing(left) && Maybe.isNothing(right)) {
-        return Maybe.Nothing;
-    }
+        if (Maybe.isNothing(right)) {
+            return left;
+        }
 
-    if (Maybe.isNothing(left)) {
-        return right;
-    }
+        return Maybe(_.concat(left.value, right.value));
+    });
 
-    if (Maybe.isNothing(right)) {
-        return left;
-    }
+    Maybe.empty = _.always(Maybe.Nothing);
+    Maybe.of = Maybe;
 
-    return Maybe(_.concat(left.value, right.value));
-});
+    Maybe.foldl = _.curry(function(fn, accum, maybe) {
+        return Maybe.case({
+            "Nothing": accum,
+            "Just": function(value) {
+                return fn(accum, value);
+            }
+        }, maybe)
+    });
 
-Maybe.empty = _.always(Maybe.Nothing);
-Maybe.of = Maybe;
+    Maybe.foldr = Maybe.foldl;
 
-Maybe.foldl = _.curry(function(fn, accum, maybe) {
-    return Maybe.case({
-        "Nothing": accum,
+    Maybe.ap = _.curry(function(apply, functor){
+        return Maybe.isNothing(apply) ? Maybe.Nothing : Maybe.map(apply.value, functor);
+    });
+
+    Maybe.flatten = Maybe.case({
+        "Nothing": Maybe.Nothing,
+        "Just": _.identity
+    });
+
+    Maybe.show = Maybe.case({
+        "Nothing": _.always("Maybe.Nothing"),
         "Just": function(value) {
-            return fn(accum, value);
+            return "Maybe.Just(" + _.show(value) + ")";
         }
-    }, maybe)
-});
+    });
 
-Maybe.foldr = Maybe.foldl;
+    return Maybe;
+}
 
-Maybe.ap = _.curry(function(apply, functor){
-    return Maybe.isNothing(apply) ? Maybe.Nothing : Maybe.map(apply.value, functor);
-});
-
-Maybe.flatten = Maybe.case({
-    "Nothing": Maybe.Nothing,
-    "Just": _.identity
-});
-
-Maybe.show = Maybe.case({
-    "Nothing": _.always("Maybe.Nothing"),
-    "Just": function(value) {
-        return "Maybe.Just(" + _.show(value) + ")";
-    }
-});
+var Maybe = TypedMaybe(_.Any);
+Maybe.Typed = TypedMaybe;
 
 module.exports = Maybe;
