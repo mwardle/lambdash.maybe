@@ -27,7 +27,7 @@ npm install --save lambdash.maybe
 ## Typed Maybe
 
 By default the Maybe implementation accepts any value.
-You can create typed list like so:
+You can create typed maybe like so:
 
 ```javascript
     var _ = require('lambdash');
