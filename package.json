@@ -10,6 +10,7 @@
     "test": "node_modules/.bin/mocha test/",
     "coverage": "node_modules/.bin/istanbul cover _mocha && open coverage/lcov-report/*.html"
   },
+  "repository": "https://github.com/mwardle/lambdash.maybe.git",
   "author": "Mark Wardle <mwwardle@gmail.com>",
   "license": "MIT",
   "dependencies": {
