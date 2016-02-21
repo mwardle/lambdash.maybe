@@ -74,7 +74,6 @@ Maybe.foldl = _.curry(function(fn, accum, maybe) {
 });
 
 Maybe.foldr = Maybe.foldl;
-Maybe.fold = Maybe.foldl;
 
 Maybe.ap = _.curry(function(apply, functor){
     return Maybe.isNothing(apply) ? Maybe.Nothing : Maybe.map(apply.value, functor);

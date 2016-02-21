@@ -119,11 +119,10 @@ describe('Maybe', function(){
         });
     });
 
-    describe('#foldl, #foldr, #fold', function(){
+    describe('#foldl, #foldr', function(){
         it('should return the accum value if the maybe is Nothing', function(){
             var fn = function(accum, value){return accum + value};
 
-            assert.equal(Maybe.fold(fn, 1, Maybe()), 1);
             assert.equal(Maybe.foldl(fn, 1, Maybe()), 1);
             assert.equal(Maybe.foldr(fn, 1, Maybe()), 1);
         });
@@ -131,7 +130,6 @@ describe('Maybe', function(){
         it('should reduce the value if the maybe is Just', function(){
             var fn = function(accum, value){return accum + value};
 
-            assert.equal(Maybe.fold(fn, 1, Maybe(2)), 3);
             assert.equal(Maybe.foldl(fn, 1, Maybe(2)), 3);
             assert.equal(Maybe.foldr(fn, 1, Maybe(2)), 3);
         });
