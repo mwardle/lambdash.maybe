@@ -12,12 +12,12 @@ var TypedMaybe = function(T) {
 
     Maybe.isJust = Maybe.case({
         Just: true,
-        Nothing: false
+        Nothing: false,
     });
 
     Maybe.isNothing = Maybe.case({
         Just: false,
-        Nothing: true
+        Nothing: true,
     });
 
     Maybe.compare = _.curry(function(left, right) {
@@ -41,7 +41,7 @@ var TypedMaybe = function(T) {
             Nothing: Maybe.Nothing,
             Just: function(value) {
                 return Maybe(fn(value));
-            }
+            },
         }, maybe);
     });
 
@@ -67,33 +67,33 @@ var TypedMaybe = function(T) {
 
     Maybe.foldl = _.curry(function(fn, accum, maybe) {
         return Maybe.case({
-            "Nothing": accum,
-            "Just": function(value) {
+            Nothing: accum,
+            Just: function(value) {
                 return fn(accum, value);
-            }
-        }, maybe)
+            },
+        }, maybe);
     });
 
     Maybe.foldr = Maybe.foldl;
 
-    Maybe.ap = _.curry(function(apply, functor){
+    Maybe.ap = _.curry(function(apply, functor) {
         return Maybe.isNothing(apply) ? Maybe.Nothing : Maybe.map(apply.value, functor);
     });
 
     Maybe.flatten = Maybe.case({
-        "Nothing": Maybe.Nothing,
-        "Just": _.identity
+        Nothing: Maybe.Nothing,
+        Just: _.identity,
     });
 
     Maybe.show = Maybe.case({
-        "Nothing": _.always("Maybe.Nothing"),
-        "Just": function(value) {
-            return "Maybe.Just(" + _.show(value) + ")";
-        }
+        Nothing: _.always('Maybe.Nothing'),
+        Just: function(value) {
+            return 'Maybe.Just(' + _.show(value) + ')';
+        },
     });
 
     return Maybe;
-}
+};
 
 var Maybe = TypedMaybe(_.Any);
 Maybe.Typed = TypedMaybe;

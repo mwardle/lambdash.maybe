@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test/",
-    "coverage": "node_modules/.bin/istanbul cover _mocha && open coverage/lcov-report/*.html"
+    "coverage": "node_modules/.bin/istanbul cover _mocha && open coverage/lcov-report/*.html",
+    "lint": "./node_modules/.bin/eslint \"src/**\"",
+    "lint-fix": "./node_modules/.bin/eslint \"src/**\" --fix"
   },
   "repository": "https://github.com/mwardle/lambdash.maybe.git",
   "author": "Mark Wardle <mwwardle@gmail.com>",
