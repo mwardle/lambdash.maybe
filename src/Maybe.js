@@ -1,24 +1,14 @@
-var _ = require('lambdash');
+const _ = require('lambdash');
 
-var TypedMaybe = function(T) {
-    var Maybe = function Maybe(value) {
+const TypedMaybe = function(T) {
+    const Constructor = function Maybe(value) {
         if (value == null) {
             return Maybe.Nothing;
         }
         return Maybe.Just(value);
     };
 
-    Maybe = _.Type.sum(Maybe, {Just: {value: T}, Nothing: []});
-
-    Maybe.isJust = Maybe.case({
-        Just: true,
-        Nothing: false,
-    });
-
-    Maybe.isNothing = Maybe.case({
-        Just: false,
-        Nothing: true,
-    });
+    const Maybe = _.Type.sum(Constructor, {Just: {value: T}, Nothing: []});
 
     Maybe.compare = _.curry(function(left, right) {
         if (Maybe.isNothing(left)) {
@@ -36,11 +26,11 @@ var TypedMaybe = function(T) {
         return _.compare(left.value, right.value);
     });
 
-    Maybe.map = _.curry(function(fn, maybe) {
+    Maybe.fmap = _.curry(function(fn, maybe) {
         return Maybe.case({
-            Nothing: Maybe.Nothing,
+            Nothing: _Maybe.Nothing,
             Just: function(value) {
-                return Maybe(fn(value));
+                return _Maybe(fn(value));
             },
         }, maybe);
     });
@@ -62,8 +52,18 @@ var TypedMaybe = function(T) {
         return Maybe(_.concat(left.value, right.value));
     });
 
-    Maybe.empty = _.always(Maybe.Nothing);
-    Maybe.of = Maybe;
+    Maybe.empty = Maybe.zero = _.always(Maybe.Nothing);
+    Maybe.of = _.curry(v => Maybe.Just(v));
+
+    Maybe.alt = _.curry((f, s) => Maybe.case({
+        Nothing: s,
+        Just: f,
+    }, f));
+
+    Maybe.traverse = _.curry((of, fn, m) => Maybe.case({
+        Nothing: () => of(_Maybe.Nothing),
+        Just: (v) => _.map(_Maybe.of, fn(Maybe.value)),
+    }, m));
 
     Maybe.foldl = _.curry(function(fn, accum, maybe) {
         return Maybe.case({
@@ -77,13 +77,15 @@ var TypedMaybe = function(T) {
     Maybe.foldr = Maybe.foldl;
 
     Maybe.ap = _.curry(function(apply, functor) {
-        return Maybe.isNothing(apply) ? Maybe.Nothing : Maybe.map(apply.value, functor);
+        return apply.isNothing() ? _Maybe.Nothing : Maybe.fmap(apply.value, functor);
     });
 
     Maybe.flatten = Maybe.case({
-        Nothing: Maybe.Nothing,
+        Nothing: () => _Maybe.Nothing,
         Just: _.identity,
     });
+
+    Maybe.extend = _.curry((fn, m) => Maybe.isNothing() ? _Maybe.Nothing : _Maybe.Just(fn(m)));
 
     Maybe.show = Maybe.case({
         Nothing: _.always('Maybe.Nothing'),
@@ -92,10 +94,22 @@ var TypedMaybe = function(T) {
         },
     });
 
+    Maybe.prototype.compare = function(r) { return Maybe.compare(this, r); };
+    Maybe.prototype.concat = function(r) { return Maybe.concat(this, r); };
+    Maybe.prototype.empty = Maybe.prototype.zero = Maybe.empty;
+    Maybe.prototype.fmap = function(fn) { return Maybe.fmap(fn, this); };
+    Maybe.prototype.ap = function(l) { return Maybe.ap(l, this); };
+    Maybe.prototype.alt = function(s) { return Maybe.alt(this, s); };
+    Maybe.prototype.foldl = function(fn, s) { return Maybe.foldl(fn, s, this); };
+    Maybe.prototype.foldr = function(fn, s) { return Maybe.foldr(fn, s, this); };
+    Maybe.prototype.traverse = function(of, fn) { return Maybe.traverse(of, fn, this); };
+    Maybe.prototype.chain = function(fn) { return Maybe.chain(fn, this); };
+    Maybe.prototype.extend = function(fn) { return Maybe.extend(fn, this); };
+
     return Maybe;
 };
 
-var Maybe = TypedMaybe(_.Any);
-Maybe.Typed = TypedMaybe;
+const _Maybe = TypedMaybe(_.Any);
+_Maybe.Typed = TypedMaybe;
 
-module.exports = Maybe;
+module.exports = _Maybe;
