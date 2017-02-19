@@ -70,15 +70,15 @@ describe('Maybe', function() {
         });
     });
 
-    describe('#fmap', function() {
+    describe('#map', function() {
         it('should return Maybe.Nothing if the maybe is Maybe.Nothing', function() {
             var fn = function(v) {return v + 1;};
-            assert.equal(Maybe.fmap(fn, Maybe()), Maybe.Nothing);
+            assert.equal(Maybe.map(fn, Maybe()), Maybe.Nothing);
         });
 
         it('should map over a Just value', function() {
             var fn = function(v) {return v + 1; };
-            var result = Maybe.fmap(fn, Maybe(1));
+            var result = Maybe.map(fn, Maybe(1));
             assert(Maybe.isJust(result));
             assert.equal(result.value, 2);
         });

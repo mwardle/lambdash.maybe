@@ -26,7 +26,7 @@ const TypedMaybe = function(T) {
         return _.compare(left.value, right.value);
     });
 
-    Maybe.fmap = _.curry(function(fn, maybe) {
+    Maybe.map = _.curry(function(fn, maybe) {
         return Maybe.case({
             Nothing: _Maybe.Nothing,
             Just: function(value) {
@@ -77,7 +77,7 @@ const TypedMaybe = function(T) {
     Maybe.foldr = Maybe.foldl;
 
     Maybe.ap = _.curry(function(apply, functor) {
-        return apply.isNothing() ? _Maybe.Nothing : Maybe.fmap(apply.value, functor);
+        return apply.isNothing() ? _Maybe.Nothing : Maybe.map(apply.value, functor);
     });
 
     Maybe.flatten = Maybe.case({
@@ -97,7 +97,7 @@ const TypedMaybe = function(T) {
     Maybe.prototype.compare = function(r) { return Maybe.compare(this, r); };
     Maybe.prototype.concat = function(r) { return Maybe.concat(this, r); };
     Maybe.prototype.empty = Maybe.prototype.zero = Maybe.empty;
-    Maybe.prototype.fmap = function(fn) { return Maybe.fmap(fn, this); };
+    Maybe.prototype.map = function(fn) { return Maybe.map(fn, this); };
     Maybe.prototype.ap = function(l) { return Maybe.ap(l, this); };
     Maybe.prototype.alt = function(s) { return Maybe.alt(this, s); };
     Maybe.prototype.foldl = function(fn, s) { return Maybe.foldl(fn, s, this); };
