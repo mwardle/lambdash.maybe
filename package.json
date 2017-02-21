@@ -1,6 +1,6 @@
 {
   "name": "lambdash.maybe",
-  "version": "0.7.0-alpha",
+  "version": "0.7.0-alpha.2",
   "description": "Maybe data type for lambdash",
   "main": "src/Maybe.js",
   "directories": {
