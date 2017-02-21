@@ -16,7 +16,7 @@
   "author": "Mark Wardle <mwwardle@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "lambdash": "^0.7.0-alpha"
+    "lambdash": "^0.7.0-alpha.2"
   },
   "devDependencies": {
     "istanbul": "^0.4.2",

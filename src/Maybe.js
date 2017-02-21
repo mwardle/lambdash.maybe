@@ -94,6 +94,16 @@ const TypedMaybe = function(T) {
         },
     });
 
+    Maybe.hashWithSeed = _.curry((seed, maybe) => {
+        if (Maybe.isNothing(maybe)) {
+            return _.Hashable.hashWithSeed(seed, 0);
+        }
+
+        const newSeed = _.Hashable.hashWithSeed(seed, 1);
+
+        return _.Hashable.hashWithSeed(newSeed, maybe.value);
+    });
+
     Maybe.prototype.compare = function(r) { return Maybe.compare(this, r); };
     Maybe.prototype.concat = function(r) { return Maybe.concat(this, r); };
     Maybe.prototype.empty = Maybe.prototype.zero = Maybe.empty;
@@ -105,6 +115,17 @@ const TypedMaybe = function(T) {
     Maybe.prototype.traverse = function(of, fn) { return Maybe.traverse(of, fn, this); };
     Maybe.prototype.chain = function(fn) { return Maybe.chain(fn, this); };
     Maybe.prototype.extend = function(fn) { return Maybe.extend(fn, this); };
+
+    _.Eq.deriveFor(Maybe);
+    _.Ord.deriveFor(Maybe);
+    _.Semigroup.deriveFor(Maybe);
+    _.Monoid.deriveFor(Maybe);
+    _.Functor.deriveFor(Maybe);
+    _.Applicative.deriveFor(Maybe);
+    _.Foldable.deriveFor(Maybe);
+    _.Monad.deriveFor(Maybe);
+    _.Show.deriveFor(Maybe);
+    _.Hashable.deriveFor(Maybe);
 
     return Maybe;
 };

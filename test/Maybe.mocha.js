@@ -182,6 +182,25 @@ describe('Maybe', function() {
         });
     });
 
+    describe('#hashWithSeed', function() {
+        it('hashes a maybe', function() {
+            const HASH_SEED = 0x811c9dc5;
+
+            var res1 = Maybe.hashWithSeed(HASH_SEED, Maybe.Nothing);
+            var res2 = Maybe.hashWithSeed(HASH_SEED, Maybe.Nothing);
+
+            assert.equal(res1, res2);
+            assert(res1 !== HASH_SEED);
+
+            var res3 = Maybe.hashWithSeed(HASH_SEED, Maybe(1));
+            var res4 = Maybe.hashWithSeed(HASH_SEED, Maybe(1));
+            var res5 = Maybe.hashWithSeed(HASH_SEED, Maybe(2));
+
+            assert.equal(res3, res4);
+            assert(res3 !== res5);
+        });
+    });
+
     describe('@implements', function() {
         it('should be a member of Eq', function() {
             assert(_.Eq.member(Maybe()));
